@@ -8,7 +8,7 @@ import (
 func main() {
 	var n, k int
 	fmt.Scanf("%d %d", &n, &k)
-	min, list := solve(n, k)
+	min, list := solve1pass(n, k)
 	fmt.Printf("%d\n%s", min, strings.Trim(fmt.Sprintf("%v", list), "[]"))
 }
 func solve(n, k int) (min int, list []int) {
@@ -28,4 +28,27 @@ func solve(n, k int) (min int, list []int) {
 		offset++
 	}
 	return
+}
+
+func solve1pass(n, k int) (min int, list []int) {
+	segmentSize := 2*k + 1
+	numSeg := n / segmentSize
+	list = make([]int, 0, numSeg+1)
+	diff := n % segmentSize
+	offset := 0
+	switch {
+	case diff == 0:
+		min = numSeg
+	case diff < k+1:
+		offset = k + 1 - diff
+		min = numSeg + 1
+	case diff >= k+1:
+		min = numSeg + 1
+	}
+
+	for pos := segmentSize - k - offset; pos <= n; pos += segmentSize {
+		list = append(list, pos)
+	}
+
+	return min, list
 }
